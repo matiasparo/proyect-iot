@@ -1,0 +1,19 @@
+{
+  "name": "@iot-proyect/measure-service",
+  "version": "1.0.0",
+  "description": "servicio encargado de realizar las mediciones de temperatura",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "ds18b20-raspi": "^0.3.4",
+    "moment": "^2.27.0",
+    "mqtt": "^4.1.0",
+    "pino": "^6.5.0",
+    "pino-pretty": "^4.1.0"
+  }
+}

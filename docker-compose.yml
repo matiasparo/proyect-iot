@@ -1,0 +1,74 @@
+version: '3.7'
+services:
+  db:
+    image: influxdb:1.7.10
+    container_name: db
+    ports:
+      - 8086:8086
+    volumes:
+      - ./data:/var/lib/influx.db:delegated
+    environment:
+      - INFLUXDB_DB=temperature_db
+      - INFLUXDB_ADMIN_USER=root
+      - INFLUXDB_ADMIN_PASSWORD=test
+      - INFLUXDB_USER=user
+      - INFLUXDB_USER_PASSWORD=test
+    networks:
+      - local
+  storage:
+    build: ./packages/storage-service
+    container_name: storage
+    ports:
+      - 3001:3000
+    networks:
+      - local
+    volumes:
+      - ./packages/storage-service:/usr/src/app:delegated
+    depends_on:
+      - db
+      - broker
+    command: 'npm start'
+    env_file:
+      - ./.env
+
+  measure:
+    build: ./packages/measure-service
+    container_name: measure
+    ports:
+      - 3002:3000
+    networks:
+      - local
+    volumes:
+      - ./packages/measure-service:/usr/src/app:delegated
+    depends_on:
+      - broker
+    command: 'npm start'
+    env_file:
+      - ./.env
+
+  broker:
+    build: ./packages/broker-service
+    container_name: broker
+    ports:
+      - 3003:3000
+      - 8883:8883
+    networks:
+      - local
+    volumes:
+      - ./packages/broker-service:/usr/src/app:delegated
+    depends_on:
+      - db
+    command: 'npm start'
+    env_file:
+      - ./.env
+   
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - 3004:3000
+    networks:
+      - local
+networks:
+  local:
+    driver: bridge
