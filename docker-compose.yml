@@ -30,7 +30,6 @@ services:
     command: 'npm start'
     env_file:
       - ./.env
-
   measure:
     build: ./packages/measure-service
     container_name: measure
